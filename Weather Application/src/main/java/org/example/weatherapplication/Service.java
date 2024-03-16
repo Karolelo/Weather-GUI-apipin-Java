@@ -9,23 +9,24 @@ import java.util.*;
 import com.google.gson.reflect.TypeToken;
 import lombok.*;
 import com.google.gson.*;
-@Setter@Getter
+import org.controlsfx.control.WorldMapView;
+
+@Setter@Getter@NoArgsConstructor
 public class Service {
 
     public static void main(String[] args) {
-        var tmp = getIsoCode("Poland");
-        var test=getInfoAboutCity("Warsaw",tmp);
-        getWeatherMap();
+        var tmp = getIsoCode("United States");
+
+        getInfoAboutExchangeCursOfCurrency("Poland");
     }
 
 
-    private final static String app_key="39a825072fbb3d248e36c3046334acc3";
+    private final static String appWeather="39a825072fbb3d248e36c3046334acc3";
+    private final static String currencyKey="17534babb67212f330c9a3cc8584f341";
     private static String countryName;
     private static String cityName;
     private  static String IScode;
 
-    public Service() {
-    }
 
     private static String getIsoCode(String countryName) {
         for (Locale locale : Locale.getAvailableLocales()) {
@@ -35,11 +36,29 @@ public class Service {
         }
         return null;
     }
+    public static Currency getCurrency() {
+        for (Locale locale : Locale.getAvailableLocales()) {
+            if (locale.getDisplayCountry(Locale.ENGLISH).equalsIgnoreCase(countryName)) {
+                Currency currency = Currency.getInstance(locale);
+                return currency;
+            }
+        }
+        return null;
+    }
+    public static Currency getCurrency(String country) {
+        for (Locale locale : Locale.getAvailableLocales()) {
+            if (locale.getDisplayCountry(Locale.ENGLISH).equalsIgnoreCase(country)) {
+                Currency currency = Currency.getInstance(locale);
+                return currency;
+            }
+        }
+        return null;
+    }
     @SneakyThrows
     public static  Map<String, Object> getWeatherMap(){
 
         City city=getInfoAboutCity(cityName,countryName);
-        String urlCode="https://api.openweathermap.org/data/2.5/weather?lat="+city.lat+"&lon="+ city.lon +"&appid="+app_key;
+        String urlCode="https://api.openweathermap.org/data/2.5/weather?lat="+city.lat+"&lon="+ city.lon +"&appid="+appWeather;
         URL url = new URL(urlCode);
         String s="";
         @Cleanup
@@ -66,6 +85,49 @@ public class Service {
         ArrayList<City> city = gson.fromJson(s,new TypeToken<ArrayList<City>>(){}.getType());
 
         return city.getFirst();
+    }
+    @SneakyThrows
+    private static String getInfoAboutExchangeCursOfCurrency(String Country){
+        String urlCode="http://api.exchangerate.host/live" +
+                "?access_key="+currencyKey+"&"+getCurrency(Country);
+        URL url = new URL(urlCode);
+        String s = "";
+        @Cleanup
+        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
+        String line;
+        while((line = in.readLine()) != null)
+            s += line;
+
+        //System.out.println(s);
+        Gson gson = new Gson();
+        Type listType = new TypeToken<HashMap<String, Object>>(){}.getType();
+        Map<String, Object> map = new Gson().fromJson(s, listType);
+        Map<String, Double> rates = (Map<String, Double>) map.get("quotes");
+        String respond = "Kursy wymiany dla " + getCurrency(Country) + ": " + rates;
+        System.out.println(respond);
+        return respond;
+    }
+
+    @SneakyThrows
+    private static String getInfoAboutExchangeCursOfCurrency(){
+        String urlCode="http://api.exchangerate.host/live" +
+                "?access_key="+currencyKey+"&"+getCurrency(countryName);
+        URL url = new URL(urlCode);
+        String s = "";
+        @Cleanup
+        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
+        String line;
+        while((line = in.readLine()) != null)
+            s += line;
+
+        //System.out.println(s);
+        Gson gson = new Gson();
+        Type listType = new TypeToken<HashMap<String, Object>>(){}.getType();
+        Map<String, Object> map = new Gson().fromJson(s, listType);
+        Map<String, Double> rates = (Map<String, Double>) map.get("quotes");
+        String respond = "Kursy wymiany dla " + getCurrency(countryName) + ": " + rates;
+        System.out.println(respond);
+        return respond;
     }
 
     public static double kelvinToCelsius(double kelvin) {
