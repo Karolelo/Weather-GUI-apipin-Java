@@ -9,24 +9,22 @@ import java.util.*;
 import com.google.gson.reflect.TypeToken;
 import lombok.*;
 import com.google.gson.*;
+@Setter@Getter
 public class Service {
 
     public static void main(String[] args) {
         var tmp = getIsoCode("Poland");
         var test=getInfoAboutCity("Warsaw",tmp);
-        System.out.println(test);
+        getWeatherMap();
     }
 
 
     private final static String app_key="39a825072fbb3d248e36c3046334acc3";
-    private String countryName;
-    private String cityName;
-    private String IScode;
+    private static String countryName;
+    private static String cityName;
+    private  static String IScode;
 
-    public Service(String countryName, String cityName) {
-        this.countryName = countryName;
-        this.IScode=getIsoCode(countryName);
-        this.cityName = cityName;
+    public Service() {
     }
 
     private static String getIsoCode(String countryName) {
@@ -37,12 +35,22 @@ public class Service {
         }
         return null;
     }
-    public static Map<String, Object> getWeatherMap(){
+    @SneakyThrows
+    public static  Map<String, Object> getWeatherMap(){
 
-
+        City city=getInfoAboutCity(cityName,countryName);
+        String urlCode="https://api.openweathermap.org/data/2.5/weather?lat="+city.lat+"&lon="+ city.lon +"&appid="+app_key;
+        URL url = new URL(urlCode);
+        String s="";
+        @Cleanup
+        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
+        String line;
+        while((line = in.readLine()) != null)
+            s += line;
         Type listType = new TypeToken<HashMap<String, Object>>(){}.getType();
-        Map<String, Object> list = new Gson().fromJson(str, listType);
-        return list;
+        Map<String, Object> map = new Gson().fromJson(s, listType);
+        System.out.println(map);
+        return map;
     }
     @SneakyThrows
     private static City getInfoAboutCity(String cityName,String IS3code) {
@@ -55,12 +63,14 @@ public class Service {
             while((line = in.readLine()) != null)
                 s += line;
         Gson gson = new Gson();
-        System.out.println(s);
         ArrayList<City> city = gson.fromJson(s,new TypeToken<ArrayList<City>>(){}.getType());
 
         return city.getFirst();
     }
 
+    public static double kelvinToCelsius(double kelvin) {
+        return kelvin - 273.15;
+    }
     @ToString
     class City {
         private String name;
