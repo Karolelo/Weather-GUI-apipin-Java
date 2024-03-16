@@ -15,9 +15,7 @@ import org.controlsfx.control.WorldMapView;
 public class Service {
 
     public static void main(String[] args) {
-        var tmp = getIsoCode("United States");
 
-        getInfoAboutExchangeCursOfCurrency("Poland");
     }
 
 
@@ -98,7 +96,7 @@ public class Service {
         while((line = in.readLine()) != null)
             s += line;
 
-        //System.out.println(s);
+
         Gson gson = new Gson();
         Type listType = new TypeToken<HashMap<String, Object>>(){}.getType();
         Map<String, Object> map = new Gson().fromJson(s, listType);
@@ -120,7 +118,6 @@ public class Service {
         while((line = in.readLine()) != null)
             s += line;
 
-        //System.out.println(s);
         Gson gson = new Gson();
         Type listType = new TypeToken<HashMap<String, Object>>(){}.getType();
         Map<String, Object> map = new Gson().fromJson(s, listType);
