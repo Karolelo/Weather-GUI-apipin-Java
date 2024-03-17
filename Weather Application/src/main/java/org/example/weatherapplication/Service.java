@@ -79,7 +79,7 @@ public class Service {
 
 
     @SneakyThrows
-    public  String getInfoAboutExchangeCursOfCurrency(String Currency){
+    public static String getInfoAboutExchangeCursOfCurrency(String currency){
         String urlCode="http://api.exchangerate.host/live" +
                 "?access_key="+currencyKey+"&"+currency;
         URL url = new URL(urlCode);
@@ -94,7 +94,7 @@ public class Service {
         Type listType = new TypeToken<HashMap<String, Object>>(){}.getType();
         Map<String, Object> map = new Gson().fromJson(s, listType);
         Map<String, Double> rates = (Map<String, Double>) map.get("quotes");
-        String respond = "Curs of exchange " + getCurrency(countryName) + ": " + rates;
+        String respond = "Curs of exchange " + currency + ": " + rates;
 
         return respond;
     }
@@ -162,54 +162,7 @@ public class Service {
         private double lat;
     }
 
-    /*public Currency getCurrency() {
-        for (Locale locale : Locale.getAvailableLocales()) {
-            if (locale.getDisplayCountry(Locale.ENGLISH).equalsIgnoreCase(countryName)) {
-                Currency currency = Currency.getInstance(locale);
-                return currency;
-            }
-        }
-        return null;
-    }*/
-
-     /*@SneakyThrows
-    public static LocalRateOfCurrency getNBPRate(String currency){
-
-        String urlCode="http://api.nbp.pl/api/exchangerates/rates/a/"+currency+"/";
-        URL url = new URL(urlCode);
-        String s = "";
-        @Cleanup
-        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
-        String line;
-        while((line = in.readLine()) != null)
-            s += line;
-
-        Gson gson = new Gson();
-        LocalRateOfCurrency localRateOfCurrency = gson.fromJson(s,LocalRateOfCurrency.class);
-        System.out.println(localRateOfCurrency);
-        return localRateOfCurrency;
-    }*/
-
-    /* @SneakyThrows
-    private static String getInfoAboutExchangeCursOfCurrency(String Country){
-        String urlCode="http://api.exchangerate.host/live" +
-                "?access_key="+currencyKey+"&"+getCurrency(Country);
-        URL url = new URL(urlCode);
-        String s = "";
-        @Cleanup
-        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
-        String line;
-        while((line = in.readLine()) != null)
-            s += line;
 
 
-        Gson gson = new Gson();
-        Type listType = new TypeToken<HashMap<String, Object>>(){}.getType();
-        Map<String, Object> map = new Gson().fromJson(s, listType);
-        Map<String, Double> rates = (Map<String, Double>) map.get("quotes");
-        String respond = "Kursy wymiany dla " + getCurrency(Country) + ": " + rates;
-        System.out.println(respond);
-        return respond;
-    }*/
 
 }

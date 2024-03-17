@@ -3,13 +3,17 @@ package org.example.weatherapplication;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
-
 import java.util.Map;
+
 
 public class HelloApplication extends Application {
 
@@ -17,12 +21,12 @@ public class HelloApplication extends Application {
     public void start(Stage primaryStage) {
 
         TextField countryField = new TextField();
-        countryField.setPromptText("Wpisz nazwę kraju");
+        countryField.setPromptText("Write name of country");
 
         TextField cityField = new TextField();
-        cityField.setPromptText("Wpisz nazwę miasta");
+        cityField.setPromptText("Write name of city");
 
-        Button searchButton = new Button("Szukaj");
+        Button searchButton = new Button("Find");
 
         TextArea responseArea = new TextArea();
         responseArea.setEditable(false);
@@ -40,7 +44,7 @@ public class HelloApplication extends Application {
             String country = countryField.getText();
             String city = cityField.getText();
             Service service = new Service(country);
-
+            service.setCityName(city);
             Map<String,Object> weatherJson = service.getWeatherMap();
             if(!currencyComboBox.getItems().contains(service.getCurrency().toString()))
             currencyComboBox.getItems().add(service.getCurrency().toString());
@@ -48,11 +52,12 @@ public class HelloApplication extends Application {
             Service.LocalRateOfCurrency rateToPLN = service.getNBPRate(service.getCurrency().getCurrencyCode());
 
             responseArea.setText("Tempreture "+weatherJson.get("main").toString()+"\n"+rateToPLN);
-            webEngine.load("https://en.wikipedia.org/wiki/"+service.getCityName());
+            webEngine.load("https://en.wikipedia.org/wiki/"+city);
         });
         currencyComboBox.setOnAction(event -> {
             String selectedCurrency = currencyComboBox.getValue();
-
+            String newMessage = responseArea.getText()+"\n"+Service.getInfoAboutExchangeCursOfCurrency(selectedCurrency);
+            responseArea.setText(newMessage);
         });
 
 
@@ -60,6 +65,10 @@ public class HelloApplication extends Application {
         Scene scene = new Scene(root, 800, 600);
 
         primaryStage.setTitle("Weather and Currency Application");
+
+        Image myImage=new Image(getClass().getResource("/weather-forecast.png").toExternalForm());
+
+        primaryStage.getIcons().add(myImage);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
