@@ -63,10 +63,10 @@ public class HelloApplication extends Application {
 
         VBox root = new VBox(10, countryField, cityField, searchButton,currencyComboBox, responseArea, webView);
         Scene scene = new Scene(root, 800, 600);
-
+        scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
         primaryStage.setTitle("Weather and Currency Application");
 
-        Image myImage=new Image(getClass().getResource("/weather-forecast.png").toExternalForm());
+        Image myImage=new Image(getClass().getResource("weather-forecast.png").toExternalForm());
 
         primaryStage.getIcons().add(myImage);
         primaryStage.setScene(scene);

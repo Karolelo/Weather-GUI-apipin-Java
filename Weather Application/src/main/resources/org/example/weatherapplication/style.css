@@ -1,0 +1,55 @@
+.root {
+    -fx-font-size: 14px;
+    -fx-font-family: 'Arial', sans-serif;
+    -fx-background-color: #202020;
+    -fx-padding: 10px;
+}
+
+.TextField {
+    -fx-background-color: #333333;
+    -fx-text-fill: #FFFFFF;
+    -fx-border-color: #FF6F61;
+    -fx-border-width: 2;
+    -fx-padding: 5px 10px;
+}
+
+.Button {
+    -fx-background-color: #FF6F61;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+.Button:hover {
+    -fx-background-color: #FF8A65;
+}
+
+.ComboBox {
+    -fx-background-color: #333333;
+    -fx-text-fill: #FFFFFF;
+    -fx-border-color: #FF6F61;
+    -fx-border-width: 2;
+}
+
+.TextArea {
+    -fx-background-color: #282828;
+    -fx-text-fill: #FFFFFF;
+    -fx-border-color: #FF6F61;
+    -fx-border-width: 2;
+    -fx-font-size: 14px;
+}
+
+.WebView {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 1);
+}
+
+.ComboBox .list-cell {
+    -fx-background-color: #333333;
+    -fx-text-fill: #FFFFFF;
+}
+
+.ComboBox .list-cell:hover {
+    -fx-background-color: #444444;
+}
